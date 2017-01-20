@@ -442,6 +442,9 @@ public class AutomaticInventory extends JavaPlugin
             case 163:
             case 164:
             case 180:
+            case 50: //torch
+            case 89: //glowstone
+            case 169: //lantern
                 return false;
             default:
                 return true;
