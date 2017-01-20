@@ -39,6 +39,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class AIEventHandler implements Listener 
@@ -90,7 +91,20 @@ public class AIEventHandler implements Listener
         if(source == null || !(source instanceof Player)) return;
         
         Player player = (Player)source;
-        tryRefillStackInHand(player, EquipmentSlot.HAND, false);
+           tryRefillStackInHand(player, EquipmentSlot.HAND, false);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if(event.getMaterial() == Material.SPLASH_POTION) {
+                Player player = event.getPlayer();
+                tryRefillStackInHand(player, EquipmentSlot.HAND, true);
+            }
+        }
+        
+
     }
 
     @SuppressWarnings("deprecation")
@@ -176,6 +190,13 @@ public class AIEventHandler implements Listener
                     if(!meta2.hasDisplayName()) return false;
                     
                     return meta1.getDisplayName().equals(meta2.getDisplayName());
+                }
+
+                if (a.getType() == Material.SPLASH_POTION && meta1 instanceof PotionMeta && meta2 instanceof PotionMeta) {
+                    PotionMeta potionMeta1 = (PotionMeta) meta1;
+                    PotionMeta potionMeta2 = (PotionMeta) meta2;
+
+                    return potionMeta1.getBasePotionData().getType().equals(potionMeta2.getBasePotionData().getType());
                 }
             }
             
